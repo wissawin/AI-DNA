@@ -1,21 +1,21 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg: #060910;
-  --bg2: #0d1520;
-  --bg3: #111c2e;
-  --border: rgba(255,255,255,0.08);
-  --border-hover: rgba(255,255,255,0.18);
-  --text-primary: #f0f4ff;
-  --text-secondary: #8898b3;
-  --text-muted: #4a5a74;
-  --green: #4ADE80;
-  --green-glow: rgba(74,222,128,0.15);
-  --blue: #60A5FA;
-  --blue-glow: rgba(96,165,250,0.15);
-  --amber: #FBBF24;
-  --amber-glow: rgba(251,191,36,0.15);
-  --radius: 14px;
+  --bg: #030816;              /* Very deep cyber midnight blue */
+  --bg2: #081125;             /* Deep electric blue card bg */
+  --bg3: #0f1c3a;             /* Secondary input / dark active blue */
+  --border: rgba(0, 132, 255, 0.15); /* Glowing cyan-blue border */
+  --border-hover: rgba(0, 229, 255, 0.4); /* Neon cyan border hover */
+  --text-primary: #f0f8ff;    /* Light ice blue */
+  --text-secondary: #8ab4f8;  /* Light electric blue description */
+  --text-muted: #3d68a8;      /* Cyber blue muted text */
+  --green: #00d2ff;           /* Neon electric cyan (replaces the green with cyan-blue theme!) */
+  --green-glow: rgba(0, 210, 255, 0.15);
+  --blue: #0088ff;            /* Bright electric blue */
+  --blue-glow: rgba(0, 136, 255, 0.15);
+  --amber: #818cf8;           /* Violet/indigo blue (replaces the yellow/amber to match the blue theme!) */
+  --amber-glow: rgba(129, 140, 248, 0.15);
+  --radius: 16px;
   --font-display: 'Space Grotesk', sans-serif;
   --font-mono: 'Space Mono', monospace;
 }
@@ -23,7 +23,7 @@
 html, body { height: 100%; }
 
 body {
-  background: var(--bg);
+  background: radial-gradient(circle at center, #071530 0%, #030816 100%);
   color: var(--text-primary);
   font-family: var(--font-display);
   min-height: 100vh;
@@ -54,9 +54,9 @@ body {
   height: 140%;
   background: linear-gradient(180deg,
     transparent 0%,
-    rgba(74,222,128,0.06) 20%,
-    rgba(96,165,250,0.08) 50%,
-    rgba(251,191,36,0.06) 80%,
+    rgba(0, 229, 255, 0.08) 20%,
+    rgba(0, 136, 255, 0.12) 50%,
+    rgba(129, 140, 248, 0.08) 80%,
     transparent 100%
   );
   animation: strandFlow 8s ease-in-out infinite;
@@ -84,10 +84,12 @@ body {
 
 /* Card */
 .card {
-  background: var(--bg2);
+  background: rgba(8, 17, 37, 0.75);
+  backdrop-filter: blur(12px);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 40px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37), 0 0 16px rgba(0, 136, 255, 0.05);
 }
 
 /* Logo / eyebrow */

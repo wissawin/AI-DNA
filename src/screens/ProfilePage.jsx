@@ -73,9 +73,9 @@ export default function ProfilePage({ profileId }) {
   }
 
   const colorMap = {
-    revenue: { main: "#4ADE80", bg: "rgba(74,222,128,0.07)", border: "rgba(74,222,128,0.25)", glow: "rgba(74,222,128,0.15)" },
-    cost:    { main: "#60A5FA", bg: "rgba(96,165,250,0.07)", border: "rgba(96,165,250,0.25)", glow: "rgba(96,165,250,0.15)" },
-    time:    { main: "#FBBF24", bg: "rgba(251,191,36,0.07)", border: "rgba(251,191,36,0.25)", glow: "rgba(251,191,36,0.15)" },
+    revenue: { main: "#00d2ff", bg: "rgba(0,210,255,0.07)", border: "rgba(0,210,255,0.25)", glow: "rgba(0,210,255,0.15)" },
+    cost:    { main: "#0088ff", bg: "rgba(0,136,255,0.07)", border: "rgba(0,136,255,0.25)", glow: "rgba(0,136,255,0.15)" },
+    time:    { main: "#818cf8", bg: "rgba(129,140,248,0.07)", border: "rgba(129,140,248,0.25)", glow: "rgba(129,140,248,0.15)" },
   };
   const c = colorMap[row.impact_id] ?? colorMap.revenue;
 

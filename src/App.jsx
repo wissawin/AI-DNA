@@ -33,7 +33,7 @@ export default function App() {
   }
 
   const profile = problem && impact ? getProfile(problem, impact) : null;
-  const colorMap = { revenue: "#4ADE80", cost: "#60A5FA", time: "#FBBF24" };
+  const colorMap = { revenue: "#00d2ff", cost: "#0088ff", time: "#818cf8" };
 
   // ── Render shareable profile page ──────────────────────────────────────────
   if (isProfilePage) {

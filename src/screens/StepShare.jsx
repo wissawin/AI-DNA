@@ -78,11 +78,11 @@ export default function StepShare({ cardDataUrl, photo, name, email, problem, im
   }
 
   const colorMap = {
-    "#4ADE80": { border: "rgba(74,222,128,0.3)",  glow: "rgba(74,222,128,0.15)" },
-    "#60A5FA": { border: "rgba(96,165,250,0.3)",  glow: "rgba(96,165,250,0.15)" },
-    "#FBBF24": { border: "rgba(251,191,36,0.3)",  glow: "rgba(251,191,36,0.15)"  },
+    "#00d2ff": { border: "rgba(0,210,255,0.3)",  glow: "rgba(0,210,255,0.15)" },
+    "#0088ff": { border: "rgba(0,136,255,0.3)",  glow: "rgba(0,136,255,0.15)" },
+    "#818cf8": { border: "rgba(129,140,248,0.3)",  glow: "rgba(129,140,248,0.15)"  },
   };
-  const c = colorMap[color] ?? colorMap["#4ADE80"];
+  const c = colorMap[color] ?? colorMap["#00d2ff"];
 
   return (
     <div className="screen">
