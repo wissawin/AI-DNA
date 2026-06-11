@@ -1,13 +1,19 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import html2canvas from "html2canvas";
+import QRCode from "qrcode";
+import { uploadCard, saveProfile } from "../supabase";
 import { getProfile, problems, impacts } from "../profiles";
 import HelixIcon from "../components/HelixIcon";
 
-export default function DNACard({ photo, name, email, problem, impact, onReset, onShare }) {
+export default function DNACard({ photo, name, email, problem, impact, onReset }) {
   const profile = getProfile(problem, impact);
   const cardRef = useRef(null);
+  const qrRef = useRef(null);
+  
   const [saving, setSaving] = useState(false);
-  const [sharing, setSharing] = useState(false);
+  const [saveStatus, setSaveStatus] = useState("saving"); // saving | saved | error
+  const [shareUrl, setShareUrl] = useState("");
+  const [copied, setCopied] = useState(false);
 
   const problemLabel = problems.find(p => p.id === problem)?.label;
   const impactLabel  = impacts.find(i => i.id === impact)?.label;
@@ -20,6 +26,14 @@ export default function DNACard({ photo, name, email, problem, impact, onReset, 
   };
   const c = colorMap[impact];
 
+  useEffect(() => {
+    // Wait a brief moment for the card layout animation to render in the DOM, then auto-save
+    const timer = setTimeout(() => {
+      autoSaveToCloud();
+    }, 600);
+    return () => clearTimeout(timer);
+  }, []);
+
   async function renderCanvas() {
     return html2canvas(cardRef.current, {
       backgroundColor: "#060910",
@@ -28,6 +42,64 @@ export default function DNACard({ photo, name, email, problem, impact, onReset, 
       allowTaint: true,
       logging: false,
     });
+  }
+
+  async function autoSaveToCloud() {
+    setSaveStatus("saving");
+    try {
+      // 1. Render card image to canvas
+      const canvas = await renderCanvas();
+      const cardDataUrl = canvas.toDataURL("image/png");
+
+      // 2. Upload card image to storage
+      const slug = email.replace(/[^a-z0-9]/gi, "_").toLowerCase();
+      const ts = Date.now();
+      const filename = `${slug}_card_${ts}.png`;
+      const cardUrl = await uploadCard(cardDataUrl, filename);
+
+      // 3. Upload selfie photo to storage (if present)
+      let photoUrl = null;
+      if (photo) {
+        const photoFilename = `${slug}_photo_${ts}.jpg`;
+        photoUrl = await uploadCard(photo, photoFilename);
+      }
+
+      // 4. Save profile to DB
+      const row = await saveProfile({
+        name,
+        email,
+        problem_id: problem,
+        impact_id: impact,
+        profile_key: `${problem}-${impact}`,
+        card_url: cardUrl,
+        photo_url: photoUrl,
+      });
+
+      // 5. Generate QR Code URL
+      const url = `${window.location.origin}/profile/${row.id}`;
+      setShareUrl(url);
+      setSaveStatus("saved");
+
+      // Render the QR code in the canvas
+      setTimeout(() => renderQR(url), 50);
+    } catch (err) {
+      console.error("Auto-save failed:", err);
+      setSaveStatus("error");
+    }
+  }
+
+  async function renderQR(url) {
+    if (!qrRef.current) return;
+    try {
+      await QRCode.toCanvas(qrRef.current, url, {
+        width: 130,
+        margin: 1,
+        color: { dark: c.main, light: "#081125" },
+        errorCorrectionLevel: "M",
+      });
+    } catch (err) {
+      console.error("QR error:", err);
+    }
   }
 
   async function handleSave() {
@@ -45,24 +117,17 @@ export default function DNACard({ photo, name, email, problem, impact, onReset, 
     setSaving(false);
   }
 
-  async function handleShare() {
-    setSharing(true);
-    try {
-      const canvas = await renderCanvas();
-      const cardDataUrl = canvas.toDataURL("image/png");
-      onShare({ cardDataUrl });
-    } catch (err) {
-      console.error(err);
-      alert("Could not generate card image.");
-      setSharing(false);
-    }
+  async function copyLink() {
+    await navigator.clipboard?.writeText(shareUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   }
 
   return (
     <div className="screen">
-      {(saving || sharing) && (
+      {saving && (
         <div className="saving-overlay">
-          {sharing ? "PREPARING CARD..." : "GENERATING IMAGE..."}
+          GENERATING IMAGE...
         </div>
       )}
 
@@ -143,30 +208,101 @@ export default function DNACard({ photo, name, email, problem, impact, onReset, 
         </div>
         {/* ── End saveable card ─────────────────────────────────── */}
 
-        {/* Primary: Save to cloud + QR */}
-        <button
-          className="btn btn-primary"
-          style={{ width: "100%", marginTop: 16, background: c.main, color: "#000", fontWeight: 700 }}
-          onClick={handleShare}
-          disabled={sharing}
-        >
-          ☁️ Save to cloud &amp; get QR code
-        </button>
+        {/* ── Auto-save Status & Share Tools ── */}
+        {saveStatus === "saving" && (
+          <div style={{
+            display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
+            padding: "16px", background: "rgba(0, 136, 255, 0.05)", border: `1.5px dashed ${c.border}`,
+            borderRadius: 12, marginTop: 16, color: "var(--text-secondary)", fontSize: 13,
+            fontFamily: "var(--font-mono)", animation: "fadeIn 0.3s ease"
+          }}>
+            <span className="save-dot" style={{ display: "inline-block", width: 8, height: 8, borderRadius: "50%", background: c.main }} />
+            Saving to cloud...
+          </div>
+        )}
 
-        {/* Secondary: local download */}
+        {saveStatus === "saved" && (
+          <div style={{
+            marginTop: 20, padding: 16, background: "rgba(8, 17, 37, 0.4)",
+            border: `1.5px solid ${c.border}`, borderRadius: 12,
+            display: "flex", alignItems: "center", gap: 16,
+            animation: "fadeIn 0.3s ease"
+          }}>
+            <div style={{ flexShrink: 0, background: "#081125", padding: 4, borderRadius: 8, border: `1px solid ${c.border}` }}>
+              <canvas ref={qrRef} style={{ display: "block", borderRadius: 4 }} />
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <h4 style={{ fontSize: 13, fontWeight: 700, color: c.main, marginBottom: 4, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                Scan to Share
+              </h4>
+              <p style={{ fontSize: 11, color: "var(--text-secondary)", marginBottom: 12, lineHeight: 1.4 }}>
+                Scan with any phone to view this card online and share it.
+              </p>
+              <div style={{ display: "flex", gap: 8 }}>
+                <button onClick={copyLink} className="btn btn-ghost" style={{ padding: "8px 12px", fontSize: 11, flex: 1 }}>
+                  {copied ? "Copied! ✓" : "Copy link"}
+                </button>
+                <a href={shareUrl} target="_blank" rel="noopener noreferrer" className="btn btn-ghost" style={{ padding: "8px 12px", fontSize: 11, textDecoration: "none", color: "var(--text-primary)" }}>
+                  ↗ Open
+                </a>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {saveStatus === "error" && (
+          <div style={{
+            marginTop: 16, padding: "16px", background: "rgba(239, 68, 68, 0.08)",
+            border: "1.5px solid rgba(239, 68, 68, 0.25)", borderRadius: 12,
+            display: "flex", flexDirection: "column", gap: 10, animation: "fadeIn 0.3s ease"
+          }}>
+            <div style={{ fontSize: 12, color: "#fca5a5", lineHeight: 1.5 }}>
+              ⚠️ **Cloud save failed.** We couldn't upload your card.
+            </div>
+            <button onClick={autoSaveToCloud} className="btn btn-primary" style={{ padding: "10px 16px", fontSize: 12, background: "linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)", boxShadow: "0 0 12px rgba(239,68,68,0.2)", color: "#fff" }}>
+              🔄 Retry saving
+            </button>
+          </div>
+        )}
+
+        {/* Local download button */}
         <button
           className="btn btn-ghost"
-          style={{ width: "100%", marginTop: 10 }}
+          style={{ width: "100%", marginTop: 16 }}
           onClick={handleSave}
           disabled={saving}
         >
           ↓ Download image locally
         </button>
 
-        <button className="btn btn-ghost" style={{ width: "100%", marginTop: 10, fontSize: 12 }} onClick={onReset}>
+        {/* Reset/another profile button */}
+        <button 
+          className="btn btn-ghost" 
+          style={{ 
+            width: "100%", marginTop: 10, fontSize: 12,
+            opacity: saveStatus === "saving" ? 0.3 : 1,
+            cursor: saveStatus === "saving" ? "not-allowed" : "pointer" 
+          }} 
+          onClick={saveStatus === "saving" ? null : onReset}
+          disabled={saveStatus === "saving"}
+        >
           Profile another participant →
         </button>
       </div>
+
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(8px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        .save-dot {
+          animation: pulse-dot 1.2s infinite ease-in-out;
+        }
+        @keyframes pulse-dot {
+          0%, 100% { opacity: 0.4; transform: scale(0.9); }
+          50% { opacity: 1; transform: scale(1.1); }
+        }
+      `}</style>
     </div>
   );
 }

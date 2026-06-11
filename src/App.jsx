@@ -73,20 +73,6 @@ export default function App() {
         <DNACard
           photo={photo} name={name} email={email} problem={problem} impact={impact}
           onReset={reset}
-          onShare={(payload) => { setSharePayload(payload); setScreen("share"); }}
-        />
-      )}
-      {screen === "share" && (
-        <StepShare
-          cardDataUrl={sharePayload?.cardDataUrl}
-          photo={photo}
-          name={name}
-          email={email}
-          problem={problem}
-          impact={impact}
-          profileName={profile?.name}
-          color={colorMap[impact]}
-          onReset={reset}
         />
       )}
     </div>
