@@ -15,11 +15,12 @@ export async function uploadCard(dataUrl, filename) {
   const res = await fetch(dataUrl);
   const blob = await res.blob();
 
+  const mimeType = dataUrl.split(";")[0].split(":")[1] || "image/png";
   const path = `cards/${filename}`;
 
   const { error } = await supabase.storage
     .from(BUCKET)
-    .upload(path, blob, { contentType: "image/png", upsert: true });
+    .upload(path, blob, { contentType: mimeType, upsert: true });
 
   if (error) throw new Error(`Upload failed: ${error.message}`);
 
@@ -31,10 +32,10 @@ export async function uploadCard(dataUrl, filename) {
  * Save profile metadata to the `profiles` table.
  * Returns the created row (including its uuid `id`).
  */
-export async function saveProfile({ name, email, problem_id, impact_id, profile_key, card_url }) {
+export async function saveProfile({ name, email, problem_id, impact_id, profile_key, card_url, photo_url }) {
   const { data, error } = await supabase
     .from("profiles")
-    .insert([{ name, email, problem_id, impact_id, profile_key, card_url }])
+    .insert([{ name, email, problem_id, impact_id, profile_key, card_url, photo_url }])
     .select()
     .single();
 

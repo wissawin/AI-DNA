@@ -4,7 +4,7 @@ import { uploadCard, saveProfile } from "../supabase";
 import { getProfile } from "../profiles";
 import HelixIcon from "../components/HelixIcon";
 
-export default function StepShare({ cardDataUrl, name, email, problem, impact, profileName, color, onReset }) {
+export default function StepShare({ cardDataUrl, photo, name, email, problem, impact, profileName, color, onReset }) {
   const qrRef = useRef(null);
   const [phase, setPhase] = useState("uploading"); // uploading | ready | error
   const [shareUrl, setShareUrl] = useState(null);
@@ -24,6 +24,13 @@ export default function StepShare({ cardDataUrl, name, email, problem, impact, p
       const filename = `${slug}_${ts}.png`;
       const cardUrl = await uploadCard(cardDataUrl, filename);
 
+      // 1.5 Upload selfie photo if present
+      let photoUrl = null;
+      if (photo) {
+        const photoFilename = `${slug}_photo_${ts}.jpg`;
+        photoUrl = await uploadCard(photo, photoFilename);
+      }
+
       // 2. Save profile metadata to DB
       const profile = getProfile(problem, impact);
       const row = await saveProfile({
@@ -33,6 +40,7 @@ export default function StepShare({ cardDataUrl, name, email, problem, impact, p
         impact_id: impact,
         profile_key: `${problem}-${impact}`,
         card_url: cardUrl,
+        photo_url: photoUrl,
       });
 
       // 3. Build shareable URL → /profile/<uuid>

@@ -79,6 +79,7 @@ export default function App() {
       {screen === "share" && (
         <StepShare
           cardDataUrl={sharePayload?.cardDataUrl}
+          photo={photo}
           name={name}
           email={email}
           problem={problem}

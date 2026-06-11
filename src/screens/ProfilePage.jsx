@@ -130,8 +130,8 @@ export default function ProfilePage({ profileId }) {
             background: "var(--bg3)",
             display: "flex", alignItems: "center", justifyContent: "center",
           }}>
-            {row.card_url
-              ? <img src={row.card_url} alt={row.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            {row.photo_url
+              ? <img src={row.photo_url} alt={row.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
               : <span style={{ fontSize: 36 }}>👤</span>
             }
           </div>
