@@ -1,0 +1,432 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #060910;
+  --bg2: #0d1520;
+  --bg3: #111c2e;
+  --border: rgba(255,255,255,0.08);
+  --border-hover: rgba(255,255,255,0.18);
+  --text-primary: #f0f4ff;
+  --text-secondary: #8898b3;
+  --text-muted: #4a5a74;
+  --green: #4ADE80;
+  --green-glow: rgba(74,222,128,0.15);
+  --blue: #60A5FA;
+  --blue-glow: rgba(96,165,250,0.15);
+  --amber: #FBBF24;
+  --amber-glow: rgba(251,191,36,0.15);
+  --radius: 14px;
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-mono: 'Space Mono', monospace;
+}
+
+html, body { height: 100%; }
+
+body {
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.app-root {
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+}
+
+/* DNA strand background */
+.dna-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+.dna-strand {
+  position: absolute;
+  top: -20%;
+  width: 1px;
+  height: 140%;
+  background: linear-gradient(180deg,
+    transparent 0%,
+    rgba(74,222,128,0.06) 20%,
+    rgba(96,165,250,0.08) 50%,
+    rgba(251,191,36,0.06) 80%,
+    transparent 100%
+  );
+  animation: strandFlow 8s ease-in-out infinite;
+}
+@keyframes strandFlow {
+  0%, 100% { opacity: 0.4; transform: scaleY(1); }
+  50% { opacity: 1; transform: scaleY(1.05); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dna-strand { animation: none; }
+}
+
+/* Screen wrapper */
+.screen {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 680px;
+  animation: screenIn 0.4s ease;
+}
+@keyframes screenIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Card */
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 40px;
+}
+
+/* Logo / eyebrow */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.logo-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 32px;
+}
+.logo-helix {
+  width: 28px;
+  height: 28px;
+}
+
+/* Steps indicator */
+.steps {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 32px;
+}
+.step-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: all 0.3s;
+}
+.step-dot.active {
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+}
+.step-dot.done {
+  background: var(--text-muted);
+}
+.step-line {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* Headings */
+.h1 {
+  font-size: clamp(28px, 5vw, 40px);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+}
+.h2 {
+  font-size: clamp(20px, 4vw, 28px);
+  font-weight: 600;
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+.h3 {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  font-size: 15px;
+  line-height: 1.6;
+  margin-bottom: 32px;
+}
+
+/* Input */
+.field {
+  margin-bottom: 16px;
+}
+.field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.field input {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-family: var(--font-display);
+  font-size: 15px;
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.field input:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px var(--green-glow);
+}
+.field input::placeholder {
+  color: var(--text-muted);
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  border-radius: 8px;
+  padding: 14px 28px;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-primary {
+  background: var(--green);
+  color: #052e16;
+  width: 100%;
+}
+.btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  padding: 10px 20px;
+  font-size: 13px;
+}
+.btn-ghost:hover { border-color: var(--border-hover); color: var(--text-primary); }
+
+/* Choice grid */
+.choice-grid {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+.choice-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+
+.choice-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg3);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+.choice-btn .icon { font-size: 20px; flex-shrink: 0; }
+.choice-btn:hover {
+  border-color: var(--border-hover);
+  background: var(--bg3);
+  transform: translateY(-1px);
+}
+.choice-btn.selected {
+  border-color: var(--selection-color, var(--green));
+  background: var(--selection-bg, var(--green-glow));
+  box-shadow: 0 0 12px var(--selection-glow, var(--green-glow));
+}
+
+/* Impact choices */
+.impact-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  background: var(--bg3);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: var(--font-display);
+}
+.impact-btn:hover { transform: translateY(-2px); }
+.impact-btn.selected {
+  box-shadow: 0 0 20px var(--i-glow);
+}
+.impact-btn .i-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--i-color);
+}
+.impact-btn .i-sub {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.impact-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-bottom: 8px;
+}
+
+/* DNA Card reveal */
+.dna-card-wrap {
+  position: relative;
+}
+.dna-card-inner {
+  border-radius: 16px;
+  padding: 36px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid;
+}
+.dna-card-inner::before {
+  content: '';
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.25;
+  background: var(--card-color);
+}
+
+.dna-id {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  color: var(--card-color);
+  margin-bottom: 6px;
+  opacity: 0.8;
+}
+.dna-name {
+  font-size: clamp(30px, 5vw, 42px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--card-color);
+  line-height: 1.1;
+  margin-bottom: 6px;
+}
+.dna-tagline {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+  font-style: italic;
+}
+.dna-desc {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+}
+.dna-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.dna-pill {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid;
+  opacity: 0.9;
+}
+
+.dna-owner {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.dna-owner-info .owner-name {
+  font-weight: 600;
+  font-size: 15px;
+}
+.dna-owner-info .owner-email {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.dna-badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+/* Card actions */
+.card-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+.btn-save {
+  flex: 1;
+  background: var(--card-color, var(--green));
+  color: #000;
+}
+.btn-save:hover { filter: brightness(1.12); transform: translateY(-1px); }
+
+/* Reveal animation */
+@keyframes cardReveal {
+  0% { opacity: 0; transform: scale(0.95) translateY(20px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+.card-reveal {
+  animation: cardReveal 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Saving state */
+.saving-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(6,9,16,0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  font-family: var(--font-mono);
+  color: var(--green);
+  font-size: 14px;
+  letter-spacing: 0.1em;
+}
