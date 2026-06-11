@@ -142,7 +142,7 @@ export default function ProfilePage({ profileId }) {
           </div>
         </div>
 
-        <div className="dna-id">AI·DNA — PROFILE #{profile.id} / 21</div>
+        <div className="dna-id">AI·DNA — PROFILE #{profile.id} / 24</div>
         <div className="dna-name">{profile.name}</div>
         <div className="dna-tagline">"{profile.tagline}"</div>
         <div className="dna-desc">{profile.description}</div>
