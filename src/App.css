@@ -30,6 +30,19 @@ body {
   overflow-x: hidden;
 }
 
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(0, 210, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 210, 255, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  background-position: center;
+  pointer-events: none;
+  z-index: 0;
+}
+
 .app-root {
   min-height: 100vh;
   position: relative;
@@ -108,6 +121,13 @@ body {
   gap: 8px;
   margin-bottom: 32px;
 }
+.logo-mark span {
+  background: linear-gradient(90deg, #00e5ff 0%, #0088ff 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  font-weight: 800 !important;
+  text-shadow: 0 0 12px rgba(0, 210, 255, 0.25);
+}
 .logo-helix {
   width: 28px;
   height: 28px;
@@ -147,12 +167,19 @@ body {
   line-height: 1.15;
   letter-spacing: -0.02em;
   margin-bottom: 12px;
+  background: linear-gradient(135deg, #ffffff 40%, var(--green) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 24px rgba(0, 210, 255, 0.25);
 }
 .h2 {
   font-size: clamp(20px, 4vw, 28px);
   font-weight: 600;
   line-height: 1.2;
   margin-bottom: 8px;
+  background: linear-gradient(135deg, #ffffff 50%, var(--green) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 .h3 {
   font-size: 18px;
@@ -182,7 +209,7 @@ body {
 }
 .field input {
   width: 100%;
-  background: var(--bg3);
+  background: rgba(15, 28, 58, 0.4);
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 12px 16px;
@@ -194,7 +221,7 @@ body {
 }
 .field input:focus {
   border-color: var(--green);
-  box-shadow: 0 0 0 3px var(--green-glow);
+  box-shadow: 0 0 12px var(--green-glow), 0 0 0 3px rgba(0, 210, 255, 0.1);
 }
 .field input::placeholder {
   color: var(--text-muted);
@@ -211,26 +238,42 @@ body {
   padding: 14px 28px;
   font-family: var(--font-display);
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  letter-spacing: 0.05em;
 }
 .btn-primary {
-  background: var(--green);
-  color: #052e16;
+  background: linear-gradient(135deg, #00d2ff 0%, #0088ff 100%);
+  color: #030816;
   width: 100%;
+  box-shadow: 0 0 16px rgba(0, 210, 255, 0.35);
+  text-transform: uppercase;
 }
-.btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
-.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+.btn-primary:hover {
+  box-shadow: 0 0 28px rgba(0, 210, 255, 0.65);
+  transform: translateY(-2px);
+  filter: brightness(1.15);
+}
+.btn-primary:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
 
 .btn-ghost {
-  background: transparent;
+  background: rgba(13, 21, 32, 0.4);
   color: var(--text-secondary);
   border: 1px solid var(--border);
   padding: 10px 20px;
   font-size: 13px;
 }
-.btn-ghost:hover { border-color: var(--border-hover); color: var(--text-primary); }
+.btn-ghost:hover {
+  border-color: var(--border-hover);
+  color: var(--text-primary);
+  box-shadow: 0 0 12px rgba(0, 136, 255, 0.15);
+}
 
 /* Choice grid */
 .choice-grid {
@@ -244,12 +287,12 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
-  background: var(--bg3);
+  background: rgba(15, 28, 58, 0.45);
   border: 1.5px solid var(--border);
   border-radius: 10px;
   padding: 14px 16px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   text-align: left;
   color: var(--text-primary);
   font-family: var(--font-display);
@@ -260,13 +303,14 @@ body {
 .choice-btn .icon { font-size: 20px; flex-shrink: 0; }
 .choice-btn:hover {
   border-color: var(--border-hover);
-  background: var(--bg3);
-  transform: translateY(-1px);
+  background: rgba(15, 28, 58, 0.75);
+  transform: translateY(-2px);
+  box-shadow: 0 0 16px rgba(0, 136, 255, 0.15);
 }
 .choice-btn.selected {
   border-color: var(--selection-color, var(--green));
   background: var(--selection-bg, var(--green-glow));
-  box-shadow: 0 0 12px var(--selection-glow, var(--green-glow));
+  box-shadow: 0 0 20px var(--selection-glow, var(--green-glow));
 }
 
 /* Impact choices */
@@ -275,32 +319,40 @@ body {
   flex-direction: column;
   align-items: flex-start;
   gap: 4px;
-  background: var(--bg3);
+  background: rgba(15, 28, 58, 0.45);
   border: 1.5px solid var(--border);
   border-radius: 12px;
   padding: 20px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: var(--font-display);
+  width: 100%;
 }
-.impact-btn:hover { transform: translateY(-2px); }
+.impact-btn:hover {
+  transform: translateY(-3px);
+  border-color: var(--border-hover);
+  box-shadow: 0 0 16px rgba(0, 136, 255, 0.15);
+}
 .impact-btn.selected {
-  box-shadow: 0 0 20px var(--i-glow);
+  box-shadow: 0 0 24px var(--i-glow);
 }
 .impact-btn .i-label {
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--i-color);
+  letter-spacing: 0.02em;
 }
 .impact-btn .i-sub {
   font-size: 12px;
-  color: var(--text-muted);
+  color: var(--text-secondary);
+  opacity: 0.8;
 }
 .impact-dot {
   width: 10px;
   height: 10px;
   border-radius: 50%;
   margin-bottom: 8px;
+  box-shadow: 0 0 8px var(--i-color);
 }
 
 /* DNA Card reveal */
