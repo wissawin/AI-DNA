@@ -20,9 +20,9 @@ export default function DNACard({ photo, name, email, problem, impact, onReset }
   const problemIcon  = problems.find(p => p.id === problem)?.icon;
 
   const colorMap = {
-    revenue: { main: "#00d2ff", bg: "rgba(0,210,255,0.07)",  border: "rgba(0,210,255,0.25)"  },
-    cost:    { main: "#0088ff", bg: "rgba(0,136,255,0.07)",  border: "rgba(0,136,255,0.25)"  },
-    time:    { main: "#818cf8", bg: "rgba(129,140,248,0.07)",  border: "rgba(129,140,248,0.25)"  },
+    revenue: { main: "#00d2ff", bg: "#091730",  border: "rgba(0,210,255,0.4)"  },
+    cost:    { main: "#0088ff", bg: "#06122c",  border: "rgba(0,136,255,0.4)"  },
+    time:    { main: "#818cf8", bg: "#0c102a",  border: "rgba(129,140,248,0.4)"  },
   };
   const c = colorMap[impact];
 
@@ -145,7 +145,7 @@ export default function DNACard({ photo, name, email, problem, impact, onReset }
         <div ref={cardRef}>
           <div
             className="dna-card-inner card-reveal"
-            style={{ "--card-color": c.main, background: c.bg, borderColor: c.border }}
+            style={{ backgroundColor: c.bg, borderColor: c.border, borderWidth: "1px", borderStyle: "solid" }}
           >
             {/* DNA watermark */}
             <div style={{
@@ -166,7 +166,7 @@ export default function DNACard({ photo, name, email, problem, impact, onReset }
                 overflow: "hidden",
                 border: `2px solid ${c.main}66`,
                 boxShadow: `0 0 14px ${c.main}44`,
-                background: "var(--bg3)",
+                background: "#0f1c3a",
                 display: "flex", alignItems: "center", justifyContent: "center",
               }}>
                 {photo
@@ -183,10 +183,10 @@ export default function DNACard({ photo, name, email, problem, impact, onReset }
               </div>
             </div>
 
-            <div className="dna-id">AI·DNA — PROFILE #{profile.id} / 24</div>
-            <div className="dna-name">{profile.name}</div>
-            <div className="dna-tagline">"{profile.tagline}"</div>
-            <div className="dna-desc">{profile.description}</div>
+            <div className="dna-id" style={{ color: c.main }}>AI·DNA — PROFILE #{profile.id} / 24</div>
+            <div className="dna-name" style={{ color: c.main }}>{profile.name}</div>
+            <div className="dna-tagline" style={{ color: "#8ab4f8" }}>"{profile.tagline}"</div>
+            <div className="dna-desc" style={{ color: "#d0e0ff" }}>{profile.description}</div>
 
             <div className="dna-meta">
               <span className="dna-pill" style={{ color: c.main, borderColor: c.border }}>
@@ -197,12 +197,12 @@ export default function DNACard({ photo, name, email, problem, impact, onReset }
               </span>
             </div>
 
-            <div className="dna-owner">
+            <div className="dna-owner" style={{ borderTop: "1px solid rgba(0, 136, 255, 0.15)" }}>
               <div className="dna-owner-info">
-                {name && <div className="owner-name">{name}</div>}
-                <div className="owner-email">{email}</div>
+                {name && <div className="owner-name" style={{ color: "#ffffff" }}>{name}</div>}
+                <div className="owner-email" style={{ color: "#5f85b8" }}>{email}</div>
               </div>
-              <div className="dna-badge">CBM AI TEAM<br />AI CHAMPION</div>
+              <div className="dna-badge" style={{ color: "#5f85b8" }}>CBM AI TEAM<br />AI CHAMPION</div>
             </div>
           </div>
         </div>

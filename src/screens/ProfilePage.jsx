@@ -73,9 +73,9 @@ export default function ProfilePage({ profileId }) {
   }
 
   const colorMap = {
-    revenue: { main: "#00d2ff", bg: "rgba(0,210,255,0.07)", border: "rgba(0,210,255,0.25)", glow: "rgba(0,210,255,0.15)" },
-    cost:    { main: "#0088ff", bg: "rgba(0,136,255,0.07)", border: "rgba(0,136,255,0.25)", glow: "rgba(0,136,255,0.15)" },
-    time:    { main: "#818cf8", bg: "rgba(129,140,248,0.07)", border: "rgba(129,140,248,0.25)", glow: "rgba(129,140,248,0.15)" },
+    revenue: { main: "#00d2ff", bg: "#091730", border: "rgba(0,210,255,0.4)", glow: "rgba(0,210,255,0.15)" },
+    cost:    { main: "#0088ff", bg: "#06122c", border: "rgba(0,136,255,0.4)", glow: "rgba(0,136,255,0.15)" },
+    time:    { main: "#818cf8", bg: "#0c102a", border: "rgba(129,140,248,0.4)", glow: "rgba(129,140,248,0.15)" },
   };
   const c = colorMap[row.impact_id] ?? colorMap.revenue;
 
@@ -100,9 +100,10 @@ export default function ProfilePage({ profileId }) {
       <div
         className="dna-card-inner"
         style={{
-          "--card-color": c.main,
-          background: c.bg,
+          backgroundColor: c.bg,
           borderColor: c.border,
+          borderWidth: "1px",
+          borderStyle: "solid",
           boxShadow: `0 0 60px ${c.glow}`,
           marginBottom: 20,
           animation: "cardReveal 0.5s cubic-bezier(0.34,1.56,0.64,1)",
@@ -127,7 +128,7 @@ export default function ProfilePage({ profileId }) {
             overflow: "hidden",
             border: `2px solid ${c.main}66`,
             boxShadow: `0 0 20px ${c.main}44`,
-            background: "var(--bg3)",
+            background: "#0f1c3a",
             display: "flex", alignItems: "center", justifyContent: "center",
           }}>
             {row.photo_url
@@ -142,10 +143,10 @@ export default function ProfilePage({ profileId }) {
           </div>
         </div>
 
-        <div className="dna-id">AI·DNA — PROFILE #{profile.id} / 24</div>
-        <div className="dna-name">{profile.name}</div>
-        <div className="dna-tagline">"{profile.tagline}"</div>
-        <div className="dna-desc">{profile.description}</div>
+        <div className="dna-id" style={{ color: c.main }}>AI·DNA — PROFILE #{profile.id} / 24</div>
+        <div className="dna-name" style={{ color: c.main }}>{profile.name}</div>
+        <div className="dna-tagline" style={{ color: "#8ab4f8" }}>"{profile.tagline}"</div>
+        <div className="dna-desc" style={{ color: "#d0e0ff" }}>{profile.description}</div>
 
         <div className="dna-meta">
           {problem && (
@@ -160,15 +161,15 @@ export default function ProfilePage({ profileId }) {
           )}
         </div>
 
-        <div className="dna-owner">
+        <div className="dna-owner" style={{ borderTop: "1px solid rgba(0, 136, 255, 0.15)" }}>
           <div className="dna-owner-info">
-            {row.name && <div className="owner-name">{row.name}</div>}
-            <div className="owner-email">{row.email}</div>
-            <div style={{ fontFamily: "var(--font-mono)", fontSize: 10, color: "var(--text-muted)", marginTop: 4 }}>
+            {row.name && <div className="owner-name" style={{ color: "#ffffff" }}>{row.name}</div>}
+            <div className="owner-email" style={{ color: "#5f85b8" }}>{row.email}</div>
+            <div style={{ fontFamily: "var(--font-mono)", fontSize: 10, color: "#5f85b8", marginTop: 4 }}>
               Joined {joinedAt}
             </div>
           </div>
-          <div className="dna-badge">CBM AI TEAM<br />AI CHAMPION</div>
+          <div className="dna-badge" style={{ color: "#5f85b8" }}>CBM AI TEAM<br />AI CHAMPION</div>
         </div>
       </div>
 
