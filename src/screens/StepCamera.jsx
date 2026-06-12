@@ -60,6 +60,10 @@ export default function StepCamera({ onCapture }) {
     canvas.width = 400;
     canvas.height = 400;
     const ctx = canvas.getContext("2d");
+    
+    // Enhance portrait brightness and saturation to fit the neon cyber-theme in downloads
+    ctx.filter = "brightness(1.2) saturate(1.3)";
+    
     // mirror the image (selfie feel)
     ctx.translate(400, 0);
     ctx.scale(-1, 1);

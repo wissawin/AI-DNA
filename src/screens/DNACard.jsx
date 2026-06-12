@@ -41,6 +41,61 @@ export default function DNACard({ photo, name, email, problem, impact, onReset }
       useCORS: true,
       allowTaint: true,
       logging: false,
+      onclone: (clonedDoc) => {
+        // ── FIX 1: Kill ALL animations & transitions globally ──────────────
+        // The .screen ancestor has "animation: screenIn" which restarts in
+        // the cloned doc (opacity 0→1). The .card-reveal also restarts
+        // (opacity 0→1). Both cause the entire subtree to be captured at
+        // near-zero opacity. A global !important override is the only way
+        // to guarantee no animation runs during capture.
+        const killAnimStyle = clonedDoc.createElement("style");
+        killAnimStyle.textContent = `
+          *, *::before, *::after {
+            animation: none !important;
+            transition: none !important;
+          }
+          .screen, .card-reveal, .dna-card-inner {
+            opacity: 1 !important;
+            transform: none !important;
+          }
+        `;
+        clonedDoc.head.appendChild(killAnimStyle);
+
+        const cardInner = clonedDoc.querySelector(".dna-card-inner");
+        if (cardInner) {
+          // Remove animation class explicitly as well
+          cardInner.classList.remove("card-reveal");
+
+          // ── FIX 2: Replace ::before pseudo-element with real DOM ────────
+          // html2canvas doesn't support filter:blur() or var() in pseudo-elements
+          const glow = clonedDoc.createElement("div");
+          glow.style.cssText = `
+            position:absolute; top:-60px; right:-60px;
+            width:220px; height:220px; border-radius:50%;
+            background:${c.main}; opacity:0.12;
+            pointer-events:none; z-index:0;
+          `;
+          cardInner.insertBefore(glow, cardInner.firstChild);
+
+          // ── FIX 3: Bake computed styles (resolve CSS variables) ─────────
+          // html2canvas cannot resolve CSS custom properties like
+          // var(--text-secondary), var(--card-color), var(--border), etc.
+          // We recursively read getComputedStyle and write static values.
+          const resolveStyles = (el) => {
+            const win = clonedDoc.defaultView;
+            if (!win) return;
+            const cs = win.getComputedStyle(el);
+            el.style.color = cs.color;
+            el.style.backgroundColor = cs.backgroundColor;
+            el.style.borderColor = cs.borderColor;
+            el.style.opacity = cs.opacity;
+            // Recurse into children
+            Array.from(el.children).forEach(resolveStyles);
+          };
+          // Resolve on the card inner itself AND all descendants
+          resolveStyles(cardInner);
+        }
+      }
     });
   }
 
@@ -145,7 +200,13 @@ export default function DNACard({ photo, name, email, problem, impact, onReset }
         <div ref={cardRef}>
           <div
             className="dna-card-inner card-reveal"
-            style={{ backgroundColor: c.bg, borderColor: c.border, borderWidth: "1px", borderStyle: "solid" }}
+            style={{ 
+              "--card-color": c.main,
+              backgroundColor: c.bg, 
+              borderColor: c.border, 
+              borderWidth: "1px", 
+              borderStyle: "solid" 
+            }}
           >
             {/* DNA watermark */}
             <div style={{

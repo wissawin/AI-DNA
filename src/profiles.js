@@ -10,7 +10,7 @@ export const problems = [
 ];
 
 export const impacts = [
-  { id: "revenue", label: "New product revenue" },
+  { id: "revenue", label: "New revenue" },
   { id: "cost",    label: "Cost saving" },
   { id: "time",    label: "Time saving" },
 ];
